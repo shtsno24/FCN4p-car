@@ -12,7 +12,7 @@ import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
 
-norm_scale = 1
+norm_scale = 10
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0

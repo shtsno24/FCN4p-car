@@ -12,7 +12,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 epoch_num = 5000
-norm_scale = 1
+norm_scale = 10
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 

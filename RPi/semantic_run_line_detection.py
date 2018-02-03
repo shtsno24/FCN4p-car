@@ -21,11 +21,6 @@ model_folder = "model"
 avr_time = 0
 
 
-window_name = "input/output/teacher"
-cv2.namedWindow(window_name)
-show_scale = 3
-
-
 def find_train_data(npz):
     #find NPZ file
     if os.path.exists(npz) == False:
@@ -89,14 +84,13 @@ try:
     input(">>")
 
     #load model
-    #model = MLP()
     model = L.Classifier(MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
     for j in range(10):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
-            ans = ortrain_label[i:i + 1,:,:,:]
+            #ans = ortrain_label[i:i + 1,:,:,:]
             start = time.time()
 
             #detection
@@ -106,12 +100,9 @@ try:
             output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
             output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
             output.data[output.data < threshold_1] = 0
-
-            avr_time += (time.time() - start)
-            print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
-
+         
+            #convert to gray scale
             inp = (inp.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
-            ans = (ans.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
             output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
             
             #calc moments
@@ -120,17 +111,15 @@ try:
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
             
-            #cx,cy = 0,0
+            #calc direction
             moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(1.5*(cx-80)+80), int(cy/3)), 5, (127,50,127),-1,4)
+            cv2.circle(moment_img,(int(1.5*(cx-80)+80), int(cy/3)), 4, (127,50,127),-1,4)
             moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
-            #print(cx,cy)
+            print(cx,cy)
             
-            show_img = np.vstack((inp, output, moment_img, ans))
-           
-
-            cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
-            key = cv2.waitKey(1000)
+            show_img = np.vstack((inp, moment_img))
+            avr_time += (time.time() - start)
+            print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
         
     
 except:
