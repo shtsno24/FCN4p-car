@@ -1,3 +1,5 @@
+#-*-coding:utf-8-*-
+
 import os
 import cv2
 import sys
@@ -11,6 +13,7 @@ import chainer.training as T
 import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
+
 
 threshold_1 = 60
 threshold_2 = 150
@@ -71,6 +74,7 @@ class MLP(chainer.Chain):
 
     
 try:
+    print("loading")
     #find dataset (NPZ file)
     find_train_data(NPZ)
 
@@ -90,7 +94,6 @@ try:
     for j in range(10):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
-            #ans = ortrain_label[i:i + 1,:,:,:]
             start = time.time()
 
             #detection

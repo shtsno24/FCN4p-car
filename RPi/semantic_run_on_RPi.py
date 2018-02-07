@@ -69,6 +69,7 @@ class MLP(chainer.Chain):
 
     
 try:
+    print("loading")
     #find dataset (NPZ file)
     find_train_data(NPZ)
 

@@ -76,6 +76,7 @@ class MLP(chainer.Chain):
 
     
 try:
+    print("loading")
     #find dataset (NPZ file)
     find_train_data(NPZ)
 
@@ -89,7 +90,6 @@ try:
     input(">>")
 
     #load model
-    #model = MLP()
     model = L.Classifier(MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
@@ -122,7 +122,7 @@ try:
             
             #cx,cy = 0,0
             moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(1.5*(cx-80)+80), int(cy/3)), 5, (127,50,127),-1,4)
+            cv2.circle(moment_img,(int(1.5 * (cx - moment_img.shape[1] / 2) + moment_img.shape[1] / 2), int(cy / 3)), 4, (127,50,127),-1,4)
             moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
             #print(cx,cy)
             
@@ -130,7 +130,7 @@ try:
            
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
-            key = cv2.waitKey(50)
+            key = cv2.waitKey(1)
         
     
 except:
