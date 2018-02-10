@@ -13,7 +13,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 epoch_num = 5000
-norm_scale = 10
+norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 
@@ -48,12 +48,12 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 30, 5, stride=5),
-            conv2=L.Convolution2D(None, 20, 4, stride=4),
-            conv3=L.Convolution2D(None, 20, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
+            conv2=L.Convolution2D(None, 16, 4, stride=4),
+            conv3=L.Convolution2D(None, 30, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,20,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,30,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
 
 
@@ -61,7 +61,7 @@ class MLP(chainer.Chain):
         h = F.relu(self.conv1(x))
         h = F.relu(self.conv2(h))
         h = F.relu(self.conv3(h))
-        
+
         h = F.relu(self.deconv3(h))
         h = F.relu(self.deconv2(h))
         h = F.relu(self.deconv1(h))

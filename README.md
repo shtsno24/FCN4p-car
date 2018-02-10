@@ -17,6 +17,7 @@
 
 
 <!--
+data/bin2train_data.npz does not exist! : please restart
 ssh scp  permission denied : sudo chmod 777 ./AI\
 ImportError: libf77blas.so.3: cannot open shared object file: No such file or directory  :  sudo apt-get install libatlas-base-dev\
 <https://github.com/apache/incubator-mxnet/issues/5290>\
