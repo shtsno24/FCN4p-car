@@ -48,12 +48,12 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
-            conv2=L.Convolution2D(None, 16, 4, stride=4),
-            conv3=L.Convolution2D(None, 30, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 4, 5, stride=5),
+            conv2=L.Convolution2D(None, 10, 4, stride=4),
+            conv3=L.Convolution2D(None, 20, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,10,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,4,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
 
 
@@ -81,7 +81,7 @@ try:
     input(">>")
 
     #sprit dataset
-    threshold = np.int32(ortrain.shape[0] * 0.60)
+    threshold = np.int32(ortrain.shape[0] * 0.80)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
     """

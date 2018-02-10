@@ -53,13 +53,14 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 16, 5, stride=5),
-            conv2=L.Convolution2D(None, 16, 4, stride=4),
-            conv3=L.Convolution2D(None, 32, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 4, 5, stride=5),
+            conv2=L.Convolution2D(None, 10, 4, stride=4),
+            conv3=L.Convolution2D(None, 20, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,16,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,10,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,4,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
+
 
     def __call__(self, x):
         h = F.relu(self.conv1(x))
@@ -105,7 +106,6 @@ try:
             output.data[output.data < threshold_1] = 0
          
             #convert to gray scale
-            inp = (inp.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
             output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
             
             #calc moments
@@ -113,14 +113,11 @@ try:
             moment_img[moment_img < threshold_2] = 0
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
-            
+            cx,cy = int(1.5*(cx-80)+80), int(cy/3)
             #calc direction
-            moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(1.5*(cx-80)+80), int(cy/3)), 4, (127,50,127),-1,4)
-            moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
+            
             print(cx,cy)
             
-            show_img = np.vstack((inp, moment_img))
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
         
