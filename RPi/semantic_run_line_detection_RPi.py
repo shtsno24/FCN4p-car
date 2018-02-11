@@ -113,10 +113,12 @@ try:
             moment_img[moment_img < threshold_2] = 0
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
-            cx,cy = int(1.5*(cx-80)+80), int(cy/3)
+            cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
+
+            str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
             #calc direction
             
-            print(cx,cy)
+            print(str_angle / np.pi * 180)
             
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
