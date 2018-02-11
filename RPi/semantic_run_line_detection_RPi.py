@@ -1,9 +1,9 @@
 #-*- coding:utf -8-*-
-
 import os
 import cv2
 import sys
 import time
+import RPi.GPIO as GPIO
 import numpy as np
 
 import chainer
@@ -14,6 +14,10 @@ import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
 
+servo_pin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo_pin,GPIO.OUT)
+servo = GPIO.PWM(servo_pin,100)
 
 threshold_1 = 60
 threshold_2 = 150
@@ -87,12 +91,12 @@ try:
     print(ortrain.shape, ortrain_label.shape)
 
     input(">>")
-
+    servo.start(0.0)
     #load model
     model = L.Classifier(MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
-    for j in range(10):
+    for j in range(100):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
             start = time.time()
@@ -116,9 +120,12 @@ try:
             cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
 
             str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
+            #str_angle = str_angle / np.pi * 180
+            servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
+            servo.ChangeDutyCycle(servo_duty)
             #calc direction
             
-            print(str_angle / np.pi * 180)
+            
             
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
@@ -131,5 +138,7 @@ except:
 
 finally:
     input(">>")
-    cv2.destroyAllWindows()    
+    cv2.destroyAllWindows()
+    servo.stop()
+    GPIO.cleanup()
 
