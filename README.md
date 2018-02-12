@@ -5,7 +5,7 @@
 	2.chainer(3.0.0 or later)  
 	3.OpenCV(3.3.0.10 or later)  
 	4.numpy(1.13.3 or later)  
-
+	5.picamera(1.13 or later)
 
 
 **Demo**

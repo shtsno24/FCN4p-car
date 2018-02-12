@@ -4,6 +4,8 @@ import cv2
 import sys
 import time
 import RPi.GPIO as GPIO
+from picamera import PiCamera
+from picamera import array
 import numpy as np
 
 import chainer
@@ -26,6 +28,10 @@ norm_scale = 10
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
+i = 0
+
+camera = PiCamera()
+camera.resolution = (160,128)
 
 def find_train_data(npz):
     #find NPZ file
@@ -82,54 +88,49 @@ try:
     #find dataset (NPZ file)
     find_train_data(NPZ)
 
-    #load dataset (NPZ file)
-    ortrain, ortrain_label = load_train_data(NPZ)
-    ortrain = ortrain.astype(np.float32)
-    orlab = ortrain_label.astype(np.float32)
-
-    print(ortrain.shape, ortrain_label.shape)
-
     input(">>")
     servo.start(0.0)
     #load model
     model = L.Classifier(MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
-    for j in range(100):
-        for i in range(ortrain.shape[0]):
-            inp = ortrain[i:i + 1,:,:,:]
-            start = time.time()
+    while True:
+        start = time.time()    
+        inp = array.PiYUVArray(camera)
+        camera.capture(inp, format = 'yuv', use_video_port = True)
+        inp = inp.array[0:60, :, 0:1].reshape(160,60).astype(np.float32)
+        inp = cv2.flip(inp,0)
+        inp = inp.reshape(1,1,160,60)
 
-            #detection
-            output = model.predictor(inp * norm_scale)
+        #detection
+        output = model.predictor(inp * norm_scale)
 
-            #filtering
-            output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
-            output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
-            output.data[output.data < threshold_1] = 0
+        #filtering
+        output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
+        output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
+        output.data[output.data < threshold_1] = 0
          
-            #convert to gray scale
-            output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
+        #convert to gray scale
+        output = (output.data.reshape(160,60) / norm_scale).astype(np.uint8)
             
-            #calc moments
-            moment_img = cv2.bitwise_not(output, False)
-            moment_img[moment_img < threshold_2] = 0
-            Moments = cv2.moments(moment_img)
-            cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
-            cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
+        #calc moments
+        moment_img = cv2.bitwise_not(output, False)
+        moment_img[moment_img < threshold_2] = 0
+        Moments = cv2.moments(moment_img)
+        cx, cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
+        cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
 
-            str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
-            #str_angle = str_angle / np.pi * 180
-            servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
-            servo.ChangeDutyCycle(servo_duty)
-            #calc direction
-            
-            
-            
-            avr_time += (time.time() - start)
-            print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
+        #calc direction
+        str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
+        servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
+        servo.ChangeDutyCycle(servo_duty) 
         
-    
+        avr_time += (time.time() - start)
+        print(avr_time / (i + 1))
+        i+=1
+
+except ZeroDivisionError:
+    print("ZeroDivisionError")
 except:
     import traceback
     traceback.print_exc()
@@ -137,6 +138,7 @@ except:
 
 finally:
     input(">>")
+    camera.close()
     cv2.destroyAllWindows()
     servo.stop()
     GPIO.cleanup()
