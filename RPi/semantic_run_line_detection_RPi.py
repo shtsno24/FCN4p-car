@@ -1,9 +1,9 @@
 #-*- coding:utf -8-*-
-
 import os
 import cv2
 import sys
 import time
+import RPi.GPIO as GPIO
 import numpy as np
 
 import chainer
@@ -14,6 +14,10 @@ import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
 
+servo_pin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo_pin,GPIO.OUT)
+servo = GPIO.PWM(servo_pin,100)
 
 threshold_1 = 60
 threshold_2 = 150
@@ -22,7 +26,6 @@ norm_scale = 10
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
-
 
 def find_train_data(npz):
     #find NPZ file
@@ -53,13 +56,14 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 30, 5, stride=5),
-            conv2=L.Convolution2D(None, 20, 4, stride=4),
-            conv3=L.Convolution2D(None, 20, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
+            conv2=L.Convolution2D(None, 16, 4, stride=4),
+            conv3=L.Convolution2D(None, 32, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,20,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,30,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
+
 
     def __call__(self, x):
         h = F.relu(self.conv1(x))
@@ -86,12 +90,12 @@ try:
     print(ortrain.shape, ortrain_label.shape)
 
     input(">>")
-
+    servo.start(0.0)
     #load model
     model = L.Classifier(MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
-    for j in range(10):
+    for j in range(100):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
             start = time.time()
@@ -105,7 +109,6 @@ try:
             output.data[output.data < threshold_1] = 0
          
             #convert to gray scale
-            inp = (inp.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
             output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
             
             #calc moments
@@ -113,14 +116,16 @@ try:
             moment_img[moment_img < threshold_2] = 0
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
-            
+            cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
+
+            str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
+            #str_angle = str_angle / np.pi * 180
+            servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
+            servo.ChangeDutyCycle(servo_duty)
             #calc direction
-            moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(1.5*(cx-80)+80), int(cy/3)), 4, (127,50,127),-1,4)
-            moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
-            print(cx,cy)
             
-            show_img = np.vstack((inp, moment_img))
+            
+            
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
         
@@ -132,5 +137,7 @@ except:
 
 finally:
     input(">>")
-    cv2.destroyAllWindows()    
+    cv2.destroyAllWindows()
+    servo.stop()
+    GPIO.cleanup()
 

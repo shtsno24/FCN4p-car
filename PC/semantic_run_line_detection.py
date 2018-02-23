@@ -56,13 +56,14 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 30, 5, stride=5),
-            conv2=L.Convolution2D(None, 20, 4, stride=4),
-            conv3=L.Convolution2D(None, 20, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
+            conv2=L.Convolution2D(None, 16, 4, stride=4),
+            conv3=L.Convolution2D(None, 32, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,20,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,30,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
+
 
     def __call__(self, x):
         h = F.relu(self.conv1(x))
@@ -120,15 +121,16 @@ try:
             moment_img[moment_img < threshold_2] = 0
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
-            
-            #cx,cy = 0,0
+            cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
+
+            str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
             moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(1.5 * (cx - moment_img.shape[1] / 2) + moment_img.shape[1] / 2), int(cy / 3)), 4, (127,50,127),-1,4)
+            cv2.circle(moment_img,(int(cx + moment_img.shape[1] / 2), cy), 4, (127,50,127),-1,4)
             moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
-            #print(cx,cy)
-            
+            print(str_angle / np.pi * 180)
+
             show_img = np.vstack((inp, output, moment_img, ans))
-           
+
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
             key = cv2.waitKey(1)

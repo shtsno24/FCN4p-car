@@ -49,13 +49,14 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 30, 5, stride=5),
-            conv2=L.Convolution2D(None, 20, 4, stride=4),
-            conv3=L.Convolution2D(None, 20, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
+            conv2=L.Convolution2D(None, 16, 4, stride=4),
+            conv3=L.Convolution2D(None, 32, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,20,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,30,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
+
 
     def __call__(self, x):
         h = F.relu(self.conv1(x))
@@ -92,9 +93,10 @@ try:
             ans = ortrain_label[i:i + 1,:,:,:]
             start = time.time()
             output = model.predictor(inp)
+            avr_time += (time.time() - start)
             output.data[output.data > 255 * norm_scale] = 255 * norm_scale
             output.data[output.data < 0] = 0
-            avr_time += (time.time() - start)
+            
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
 
             inp = inp.reshape(ortrain.shape[2],ortrain.shape[3])

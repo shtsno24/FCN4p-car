@@ -12,8 +12,12 @@ import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
 
+<<<<<<< HEAD
 epoch_num = 5000
-norm_scale = 10
+=======
+epoch_num = 10000
+>>>>>>> 8e3e8e49ded44ea4710d5ee274027028a9fea1cd
+norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 
@@ -48,12 +52,12 @@ def load_train_data(npz):
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 30, 5, stride=5),
-            conv2=L.Convolution2D(None, 20, 4, stride=4),
-            conv3=L.Convolution2D(None, 20, 2, stride=1),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, 5, stride=5),
+            conv2=L.Convolution2D(None, 16, 4, stride=4),
+            conv3=L.Convolution2D(None, 32, 2, stride=1),
 
-            deconv3 = L.Deconvolution2D(None,20,2,stride=1),
-            deconv2 = L.Deconvolution2D(None,30,4,stride=4),
+            deconv3 = L.Deconvolution2D(None,16,2,stride=1),
+            deconv2 = L.Deconvolution2D(None,8,4,stride=4),
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
 
 
@@ -61,7 +65,7 @@ class MLP(chainer.Chain):
         h = F.relu(self.conv1(x))
         h = F.relu(self.conv2(h))
         h = F.relu(self.conv3(h))
-        
+
         h = F.relu(self.deconv3(h))
         h = F.relu(self.deconv2(h))
         h = F.relu(self.deconv1(h))
@@ -81,7 +85,7 @@ try:
     input(">>")
 
     #sprit dataset
-    threshold = np.int32(ortrain.shape[0] * 0.60)
+    threshold = np.int32(ortrain.shape[0] * 0.80)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
     """
