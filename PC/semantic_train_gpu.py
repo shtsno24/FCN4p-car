@@ -17,7 +17,16 @@ epoch_num = 5000
 norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
-gpu_id = 0
+
+
+"""
+using CPU : gpu_id = -1
+
+using GPU : gpu_id = 0
+
+"""
+gpu_id = 0 
+#gpu_id = -1
 
 
 def find_train_data(npz):
