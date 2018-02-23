@@ -13,7 +13,11 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 epoch_num = 5000
+=======
+epoch_num = 10000
+>>>>>>> 8e3e8e49ded44ea4710d5ee274027028a9fea1cd
 =======
 epoch_num = 10000
 >>>>>>> 8e3e8e49ded44ea4710d5ee274027028a9fea1cd
