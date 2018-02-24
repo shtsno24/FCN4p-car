@@ -68,6 +68,7 @@ class MLP(chainer.Chain):
             deconv1 = L.Deconvolution2D(None,1,5,stride=5))
 
 
+
     def __call__(self, x):
         h = F.relu(self.conv1(x))
         h = F.relu(self.conv2(h))
