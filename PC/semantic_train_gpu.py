@@ -27,8 +27,8 @@ using CPU : gpu_id = -1
 using GPU : gpu_id = 0
 
 """
-#gpu_id = 0 
-gpu_id = -1
+gpu_id = 0 
+#gpu_id = -1
 
 
 def find_train_data(npz):
