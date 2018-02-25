@@ -16,6 +16,8 @@ import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
 
+import net
+
 servo_pin = 18
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(servo_pin,GPIO.OUT)
@@ -91,7 +93,7 @@ try:
     input(">>")
     servo.start(0.0)
     #load model
-    model = L.Classifier(MLP())
+    model = L.Classifier(net.MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
     while True:

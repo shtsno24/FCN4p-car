@@ -2,7 +2,7 @@
 import os
 import sys
 import time
-import cupy
+#import cupy
 import numpy as np
 
 import chainer
@@ -12,6 +12,8 @@ import chainer.training as T
 import chainer.training.extensions as E
 from chainer.datasets import tuple_dataset
 from chainer import serializers
+
+import net
 
 epoch_num = 5000
 norm_scale = 1
@@ -25,8 +27,8 @@ using CPU : gpu_id = -1
 using GPU : gpu_id = 0
 
 """
-gpu_id = 0 
-#gpu_id = -1
+#gpu_id = 0 
+gpu_id = -1
 
 
 def find_train_data(npz):
@@ -55,7 +57,7 @@ def load_train_data(npz):
 
     return tmp_train, tmp_train_label
 
-
+"""
 class MLP(chainer.Chain):
 
     def __init__(self):
@@ -79,7 +81,7 @@ class MLP(chainer.Chain):
         h = F.relu(self.deconv1(h))
         
         return h
-
+"""
     
 try:
     #find dataset (NPZ file)
@@ -105,7 +107,7 @@ try:
     
 
     #load model
-    model = L.Classifier(MLP(),lossfun=F.mean_squared_error)
+    model = L.Classifier(net.MLP(),lossfun=F.mean_squared_error)
     #model = L.Classifier(MLP())
     model.compute_accuracy = False
     
