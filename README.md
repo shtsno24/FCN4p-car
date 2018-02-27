@@ -1,11 +1,11 @@
 # pi-car2  
 
 **Requirements**  
-	1.python3(3.5 or later)  
-	2.chainer(3.0.0 or later)  
-	3.OpenCV(3.3.0.10 or later)  
-	4.numpy(1.13.3 or later)  
-	5.picamera(1.13 or later)
+	1.python3(3.5+)  
+	2.chainer(3.0.0+  
+	3.OpenCV(3.3.0.10+)  
+	4.numpy(1.13.3+)  
+	5.picamera(1.13+)
 
 
 **Demo**
