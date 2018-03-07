@@ -14,7 +14,7 @@ from chainer import serializers
 
 import net
 
-epoch_num = 5000
+epoch_num = 10000
 
 norm_scale = 1
 NPZ = "data/bin2train_data.npz"
@@ -60,7 +60,7 @@ try:
     input(">>")
 
     #sprit dataset
-    threshold = np.int32(ortrain.shape[0] * 0.80)
+    threshold = np.int32(ortrain.shape[0] * 0.50)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
     """
