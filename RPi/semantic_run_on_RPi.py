@@ -71,12 +71,13 @@ try:
             ans = ortrain_label[i:i + 1,:,:,:]
             start = time.time()
             output = model.predictor(inp)
-            avr_time += (time.time() - start)
+            end = time.time() - start
+            avr_time += end
             output.data[output.data > 255 * norm_scale] = 255 * norm_scale
             output.data[output.data < 0] = 0
             
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
-
+            print(end)
             inp = inp.reshape(ortrain.shape[2],ortrain.shape[3])
             ans = ans.reshape(ortrain.shape[2],ortrain.shape[3])
             output = output.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale
