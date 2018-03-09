@@ -34,8 +34,8 @@ for i in range(img.shape[0]):
     buff_bin = cv2.imread(dir_bin_name + "/" + str(i) + ".png", cv2.IMREAD_GRAYSCALE)
     buff_img = img[i].reshape((img.shape[2],img.shape[3]))
     
-    rot_buff_bin = cv2.flip(buff_bin,0)
-    rot_buff_img = cv2.flip(buff_img,0)
+    rot_buff_bin = cv2.flip(buff_bin,1)
+    rot_buff_img = cv2.flip(buff_img,1)
 
     cv2.imshow(output_window_name,  cv2.resize(rot_buff_img.astype(np.uint8),(img.shape[3] * 5,img.shape[2] * 5)))
 
