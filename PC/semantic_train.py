@@ -73,7 +73,7 @@ try:
 
     #load model
     model = L.Classifier(net.MLP(),lossfun=F.mean_squared_error)
-    #model = L.Classifier(MLP())
+    #model = L.Classifier(net.MLP())
     model.compute_accuracy = False
 
     #apply optimizer

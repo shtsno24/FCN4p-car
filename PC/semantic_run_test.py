@@ -64,14 +64,13 @@ try:
     input(">>")
 
     #load model
-    #model = MLP()
     model = L.Classifier(net.MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
     for j in range(30):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
-            ans = ortrain_label[i:i + 1,:,:,:]
+            ans = orlab[i:i + 1,:,:,:]
             start = time.time()
 
             output = model.predictor(inp * norm_scale)

@@ -73,10 +73,10 @@ try:
     model = L.Classifier(net.MLP())
     serializers.load_npz(model_folder + "/trained_model.npz",model)
    
-    for j in range(10):
+    for j in range(1):
         for i in range(ortrain.shape[0]):
             inp = ortrain[i:i + 1,:,:,:]
-            ans = ortrain_label[i:i + 1,:,:,:]
+            ans = orlab[i:i + 1,:,:,:]
             start = time.time()
 
             #detection

@@ -28,6 +28,7 @@ using GPU : gpu_id = 0
 
 """
 gpu_id = 0 
+chainer.using_config('cudnn_deterministic',True)
 #gpu_id = -1
 
 
