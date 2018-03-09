@@ -15,7 +15,7 @@ from chainer import serializers
 
 import net
 
-epoch_num = 10000
+epoch_num = 20000
 norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"

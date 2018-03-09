@@ -7,9 +7,9 @@ import chainer.links as L
 class MLP(chainer.Chain):
 
     def __init__(self):
-        super(MLP, self).__init__(conv1=L.Convolution2D(1, 8, (3,8), stride=(3,8)),
+        super(MLP, self).__init__(conv1=L.Convolution2D(1, 10, (3,8), stride=(3,8)),
             conv2=L.Convolution2D(None, 8, (2,2), stride=1),
-            conv3=L.Convolution2D(None, 16, (2,2), stride=1),
+            conv3=L.Convolution2D(None, 6, (2,2), stride=1),
 
             deconv2 = L.Deconvolution2D(None,8,3,stride=1),
             deconv1 = L.Deconvolution2D(None,1,(3,8),stride=(3,8)))
