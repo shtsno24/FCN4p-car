@@ -111,7 +111,7 @@ try:
 
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
-            key = cv2.waitKey(1)
+            key = cv2.waitKey(500)
         
     
 except:
