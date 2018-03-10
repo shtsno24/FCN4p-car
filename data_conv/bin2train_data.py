@@ -7,7 +7,7 @@ i = 0
 ESC = 27
 output_window_name = "output"
 cv2.namedWindow(output_window_name)
-img_size = 2
+img_scale = 0.4
 
 NPZ = "array2bin.npz"
 dir_bin_name = "img_bin"
@@ -23,8 +23,8 @@ with np.load(NPZ) as data:
     print(img.shape)
     print(img.shape)
 
-rot_img_bin = np.empty((1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size)),np.uint8)
-rot_img = np.empty((1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size)),np.uint8)
+rot_img_bin = np.empty((1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale)),np.uint8)
+rot_img = np.empty((1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale)),np.uint8)
 
 print(img)
 
@@ -39,16 +39,16 @@ for i in range(img.shape[0]):
 
     cv2.imshow(output_window_name,  cv2.resize(rot_buff_img.astype(np.uint8),(img.shape[3] * 5,img.shape[2] * 5)))
 
-    buff_img = cv2.resize(buff_img,(int(img.shape[3] / img_size),int(img.shape[2] / img_size)))
-    buff_bin = cv2.resize(buff_bin,(int(img.shape[3] / img_size),int(img.shape[2] / img_size)))
-    rot_buff_img = cv2.resize(rot_buff_img,(int(img.shape[3] / img_size),int(img.shape[2] / img_size)))
-    rot_buff_bin = cv2.resize(rot_buff_bin,(int(img.shape[3] / img_size),int(img.shape[2] / img_size)))
+    buff_img = cv2.resize(buff_img,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
+    buff_bin = cv2.resize(buff_bin,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
+    rot_buff_img = cv2.resize(rot_buff_img,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
+    rot_buff_bin = cv2.resize(rot_buff_bin,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
 
 
-    buff_img = buff_img.reshape(1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size))
-    buff_bin = buff_bin.reshape(1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size))
-    rot_buff_img = rot_buff_img.reshape(1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size))
-    rot_buff_bin = rot_buff_bin.reshape(1, 1, int(img.shape[2] / img_size),int(img.shape[3] / img_size))
+    buff_img = buff_img.reshape(1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale))
+    buff_bin = buff_bin.reshape(1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale))
+    rot_buff_img = rot_buff_img.reshape(1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale))
+    rot_buff_bin = rot_buff_bin.reshape(1, 1, int(img.shape[2] * img_scale),int(img.shape[3] * img_scale))
 
     rot_img_bin = np.vstack((rot_img_bin, buff_bin))
     rot_img_bin = np.vstack((rot_img_bin, rot_buff_bin))
