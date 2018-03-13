@@ -40,7 +40,7 @@ def load_train_data(npz):
     #loading data from NPZ file
     with np.load(npz) as data:
         tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
+        tmp_train_label = data["img_test"]
     
     print(tmp_train.shape)
     print(tmp_train_label.shape)
@@ -73,7 +73,7 @@ try:
 
     #load model
     model = L.Classifier(net.MLP(),lossfun=F.mean_squared_error)
-    #model = L.Classifier(net.MLP())
+    
     model.compute_accuracy = False
 
     #apply optimizer
@@ -81,7 +81,7 @@ try:
     optimizer.setup(model)
 
     #set iterator
-    train_iter = chainer.iterators.SerialIterator(train, batch_size=30)
+    train_iter = chainer.iterators.SerialIterator(train, batch_size=50)
     test_iter = chainer.iterators.SerialIterator(test, batch_size=30, repeat=False, shuffle=False)
 
     updater = T.StandardUpdater(train_iter, optimizer, device=-1)
