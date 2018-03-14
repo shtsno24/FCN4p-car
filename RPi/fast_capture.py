@@ -7,7 +7,7 @@ from threading import Thread
 import picamera.array
 
 class fast_capture:
-    def __init__(self, resolution = (160, 128), color_effects = (128, 128), framerate = 90):
+    def __init__(self, resolution = (64,24), color_effects = (128, 128), framerate = 90):
         self.cam = picamera.PiCamera()
         self.cam.resolution = resolution
         self.cam.color_effects = color_effects

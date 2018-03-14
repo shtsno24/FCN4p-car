@@ -74,25 +74,20 @@ try:
             start = time.time()
 
             output = model.predictor(inp * norm_scale)
-            output.data[output.data > 255 * norm_scale] = 255 * norm_scale
-            output.data[output.data < 0] = 0
 
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
-
-            #inp = inp.reshape(ortrain.shape[2],ortrain.shape[3])
+            
             inp = inp.reshape(1,ortrain.shape[2],ortrain.shape[3])
             inp = np.vstack((inp,inp,inp))
             inp = inp.transpose(1,2,0)
-            #ans = ans.reshape(ortrain.shape[2],ortrain.shape[3])
+            
             ans = ans.reshape(3,ortrain.shape[2],ortrain.shape[3])
             ans = ans.transpose(1,2,0)
-            #output = output.data.reshape(ortrain.shape[2],ortrain.shape[3]) * norm_scale
+            
             output = output.data.reshape(3,ortrain.shape[2],ortrain.shape[3]) * norm_scale
             output = output.transpose(1,2,0)
-            #print(inp.shape)
-            #print(ans.shape)
-            #print(output.shape)
+            
             show_img = np.vstack((inp, output, ans))
         
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))

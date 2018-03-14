@@ -40,7 +40,7 @@ def load_train_data(npz):
     #loading data from NPZ file
     with np.load(npz) as data:
         tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
+        tmp_train_label = data["img_test"]
     
     print(tmp_train.shape)
     print(tmp_train_label.shape)
@@ -73,15 +73,10 @@ try:
             output = model.predictor(inp)
             end = time.time() - start
             avr_time += end
-            output.data[output.data > 255 * norm_scale] = 255 * norm_scale
-            output.data[output.data < 0] = 0
             
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
             print(end)
-            inp = inp.reshape(ortrain.shape[2],ortrain.shape[3])
-            ans = ans.reshape(ortrain.shape[2],ortrain.shape[3])
-            output = output.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale
-            show_img = np.vstack((inp, output.data, ans))
+            
                  
         
     
