@@ -47,7 +47,7 @@ def load_train_data(npz):
     #loading data from NPZ file
     with np.load(npz) as data:
         tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
+        tmp_train_label = data["img_test"]
     
     print(tmp_train.shape)
     print(tmp_train_label.shape)
@@ -83,28 +83,34 @@ try:
             output = model.predictor(inp * norm_scale)
 
             #filtering
-            output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
-            output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
-            output.data[output.data < threshold_1] = 0
+            #output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
+            #output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
+            #output.data[output.data < threshold_1] = 0
 
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
 
-            inp = (inp.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
-            ans = (ans.reshape(ortrain.shape[2],ortrain.shape[3])).astype(np.uint8)
-            output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
+            inp = inp.reshape(1,ortrain.shape[2],ortrain.shape[3])
+            inp = np.vstack((inp,inp,inp))
+            inp = inp.transpose(1,2,0)
             
+            ans = ans.reshape(3,ortrain.shape[2],ortrain.shape[3])
+            ans = ans.transpose(1,2,0)
+            
+            output = output.data.reshape(3,ortrain.shape[2],ortrain.shape[3]) * norm_scale
+            output_buff = output
+            output = output.transpose(1,2,0)
+           
             #calc moments
-            moment_img = cv2.bitwise_not(output, False)
-            moment_img[moment_img < threshold_2] = 0
+            moment_img = output_buff[0]
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
             cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
 
             str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
             moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(cx + moment_img.shape[1] / 2), cy), 4, (127,50,127),-1,4)
-            moment_img = cv2.cvtColor(moment_img, cv2.COLOR_BGR2GRAY)
+            cv2.circle(moment_img,(int(cx + moment_img.shape[1] / 2), cy), 4, (127,127,127),-1,4)
+
             print(str_angle / np.pi * 180)
 
             show_img = np.vstack((inp, output, moment_img, ans))

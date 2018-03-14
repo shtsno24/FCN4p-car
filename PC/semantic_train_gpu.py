@@ -2,7 +2,6 @@
 import os
 import sys
 import time
-#import cupy
 import numpy as np
 
 import chainer
@@ -27,7 +26,7 @@ using CPU : gpu_id = -1
 using GPU : gpu_id = 0
 
 """
-gpu_id = 0 
+gpu_id = 0
 chainer.using_config('cudnn_deterministic',True)
 #gpu_id = -1
 
@@ -51,7 +50,7 @@ def load_train_data(npz):
     #loading data from NPZ file
     with np.load(npz) as data:
         tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
+        tmp_train_label = data["img_test"]
     
     print(tmp_train.shape)
     print(tmp_train_label.shape)

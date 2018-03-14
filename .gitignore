@@ -98,3 +98,4 @@ ENV/
 # mypy
 .mypy_cache/
 PC/model/trained_model.npz
+PC/result/log

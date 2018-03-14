@@ -13,7 +13,7 @@ class MLP(chainer.Chain):
             conv3=L.Convolution2D(None, 6, (2,2), stride=1),
 
             deconv2 = L.Deconvolution2D(None,8,3,stride=1),
-            deconv1 = L.Deconvolution2D(None,1,(3,8),stride=(3,8)))
+            deconv1 = L.Deconvolution2D(None,3,(3,8),stride=(3,8)))
                        
 =======
         super(MLP, self).__init__(conv1=L.Convolution2D(1, 4, (3,8), stride=(3,8)),

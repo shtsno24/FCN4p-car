@@ -80,18 +80,10 @@ try:
 
             #detection
             output = model.predictor(inp * norm_scale)
+            output = output.data.reshape(3,ortrain.shape[2],ortrain.shape[3]) * norm_scale
 
-            #filtering
-            output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
-            output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
-            output.data[output.data < threshold_1] = 0
-         
-            #convert to gray scale
-            output = (output.data.reshape(ortrain.shape[2],ortrain.shape[3]) / norm_scale).astype(np.uint8)
-            
             #calc moments
-            moment_img = cv2.bitwise_not(output, False)
-            moment_img[moment_img < threshold_2] = 0
+            moment_img = output[0]
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
             cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
@@ -100,9 +92,6 @@ try:
             #str_angle = str_angle / np.pi * 180
             servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
             servo.ChangeDutyCycle(servo_duty)
-            #calc direction
-            
-            
             
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))
