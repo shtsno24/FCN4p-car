@@ -15,6 +15,7 @@ class fast_capture:
         self.stream = self.cam.capture_continuous(self.capture, format = 'yuv', use_video_port = True)
         self.frame = None
         self.stopped = False
+        self.led = True
     
     def start(self):
         t = Thread(target = self.update, args = ())
