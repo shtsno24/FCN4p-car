@@ -22,7 +22,7 @@ avr_time = 0
 
 window_name = "input/output/teacher"
 cv2.namedWindow(window_name)
-show_scale = 3
+show_scale = 10
 
 
 def find_train_data(npz):

@@ -15,10 +15,8 @@ from chainer import serializers
 
 import net
 
-threshold_1 = 60
-threshold_2 = 150
 
-norm_scale = 10
+norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
@@ -26,7 +24,7 @@ avr_time = 0
 
 window_name = "input/output/teacher"
 cv2.namedWindow(window_name)
-show_scale = 3
+show_scale = 10
 
 
 def find_train_data(npz):
@@ -109,7 +107,7 @@ try:
 
             str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
             moment_img = cv2.cvtColor(moment_img,cv2.COLOR_GRAY2BGR)
-            cv2.circle(moment_img,(int(cx + moment_img.shape[1] / 2), cy), 4, (127,127,127),-1,4)
+            cv2.circle(moment_img,(int(cx + moment_img.shape[1] / 2), cy), 4, (127,255,127),-1,4)
 
             print(str_angle / np.pi * 180)
 
@@ -117,7 +115,7 @@ try:
 
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
-            key = cv2.waitKey(500)
+            key = cv2.waitKey(50)
         
     
 except:
