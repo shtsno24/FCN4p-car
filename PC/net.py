@@ -25,4 +25,5 @@ class MLP(chainer.Chain):
         h = F.relu(self.deconv2(h))
         h = F.relu(self.deconv1(h))
         
+        
         return h
