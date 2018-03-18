@@ -1,72 +1,37 @@
 [
     {
-        "main/loss": 5314.531494140625,
-        "validation/main/loss": 5313.536783854167,
+        "main/loss": 5312.4075927734375,
+        "validation/main/loss": 5311.597981770833,
         "epoch": 1,
         "iteration": 4,
-        "elapsed_time": 0.1922269625443233
+        "elapsed_time": 0.19840230294320763
     },
     {
-        "main/loss": 5313.023111979167,
-        "validation/main/loss": 5312.226806640625,
+        "main/loss": 5311.231770833333,
+        "validation/main/loss": 5310.537760416667,
         "epoch": 2,
         "iteration": 7,
-        "elapsed_time": 0.35319133511576833
+        "elapsed_time": 0.3574700851860928
     },
     {
-        "main/loss": 5311.821614583333,
-        "validation/main/loss": 5311.177164713542,
+        "main/loss": 5310.259765625,
+        "validation/main/loss": 5309.5009765625,
         "epoch": 3,
         "iteration": 10,
-        "elapsed_time": 0.5119510111057957
+        "elapsed_time": 0.5182203692215447
     },
     {
-        "main/loss": 5310.644205729167,
-        "validation/main/loss": 5310.204182942708,
+        "main/loss": 5308.995930989583,
+        "validation/main/loss": 5308.357340494792,
         "epoch": 4,
         "iteration": 13,
-        "elapsed_time": 0.6644020605360823
+        "elapsed_time": 0.6794007182349439
     },
     {
-        "main/loss": 5309.5172119140625,
-        "validation/main/loss": 5308.653157552083,
+        "main/loss": 5307.63134765625,
+        "validation/main/loss": 5306.334228515625,
         "epoch": 5,
         "iteration": 17,
-        "elapsed_time": 0.854217034424455
-    },
-    {
-        "main/loss": 5308.003092447917,
-        "validation/main/loss": 5307.5283203125,
-        "epoch": 6,
-        "iteration": 20,
-        "elapsed_time": 1.0009390444250703
-    },
-    {
-        "main/loss": 5307.370442708333,
-        "validation/main/loss": 5306.628011067708,
-        "epoch": 7,
-        "iteration": 23,
-        "elapsed_time": 1.1518801466676383
-    },
-    {
-        "main/loss": 5306.453450520833,
-        "validation/main/loss": 5305.865641276042,
-        "epoch": 8,
-        "iteration": 26,
-        "elapsed_time": 1.305435621085191
-    },
-    {
-        "main/loss": 5305.637532552083,
-        "validation/main/loss": 5305.037353515625,
-        "epoch": 9,
-        "iteration": 29,
-        "elapsed_time": 1.4572508237877662
-    },
-    {
-        "main/loss": 5304.74853515625,
-        "validation/main/loss": 5303.565348307292,
-        "epoch": 10,
-        "iteration": 33,
-        "elapsed_time": 1.6431325343967025
+        "elapsed_time": 0.8643902044866463
     }
 ]

@@ -93,7 +93,7 @@ print(rot_img_test.shape)
 
 
 
-np.savez("bin2train_data.npz", img=rot_img, img_bin = rot_img_bin, img_test = rot_img_test,label=label)
+np.savez("bin2train_data.npz", img=rot_img, img_bin = rot_img_bin, img_test = rot_img_test, img_test_bin = (rot_img_test/127),label=label)
 
 
 while True:

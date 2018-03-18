@@ -47,7 +47,7 @@ def load_train_data(npz):
 
     return tmp_train, tmp_train_label
 
-    
+
 try:
     #find dataset (NPZ file)
     find_train_data(NPZ)
@@ -63,6 +63,7 @@ try:
     threshold = np.int32(ortrain.shape[0] * 0.50)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
+    #orlab = ortrain_label.astype(np.int32)
     
     """
     train = tuple_dataset.TupleDataset(ortrain[0:threshold] / 255, orlab[0:threshold] / 255)
@@ -73,9 +74,8 @@ try:
     
 
     #load model
-    model = L.Classifier(net.MLP(),lossfun=F.mean_squared_error)
+    model = L.Classifier(net.MLP(),lossfun=net.Loss.loss_func)
     model.compute_accuracy = False
-    
 
     #apply optimizer
     optimizer = chainer.optimizers.Adam()

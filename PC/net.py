@@ -16,14 +16,23 @@ class MLP(chainer.Chain):
             deconv1 = L.Deconvolution2D(None,3,(3,8),stride=(3,8)))
                        
 
-
     def __call__(self, x):
         h = F.relu(self.conv1(x))
         h = F.relu(self.conv2(h))
         h = F.relu(self.conv3(h))
 
         h = F.relu(self.deconv2(h))
-        h = F.relu(self.deconv1(h))
-        
-        
+        h = F.softmax(self.deconv1(h))
+
         return h
+     
+class Loss():
+    def loss_func(x,t):
+        """
+        x = F.reshape(x,(x.shape[0],-1))
+        t = F.reshape(t,(t.shape[0],-1))
+        loss = F.softmax_cross_entropy(x,t)
+        """
+        loss = F.mean_squared_error(x,t)
+        return loss
+    
