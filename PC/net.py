@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+import numpy as np
 import chainer
 import chainer.functions as F
 import chainer.links as L
@@ -27,12 +28,9 @@ class MLP(chainer.Chain):
         return h
      
 class Loss():
-    def loss_func(x,t):
-        """
-        x = F.reshape(x,(x.shape[0],-1))
-        t = F.reshape(t,(t.shape[0],-1))
-        loss = F.softmax_cross_entropy(x,t)
-        """
-        loss = F.mean_squared_error(x,t)
+    def loss_func(y,t):
+        
+        t = F.argmax(t,axis = 1)
+        loss = F.softmax_cross_entropy(y,t)
         return loss
     

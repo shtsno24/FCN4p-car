@@ -16,7 +16,7 @@ import net
 
 epoch_num = 20000
 
-norm_scale = 1
+
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 
@@ -40,7 +40,7 @@ def load_train_data(npz):
     #loading data from NPZ file
     with np.load(npz) as data:
         tmp_train = data["img"]
-        tmp_train_label = data["img_test"]
+        tmp_train_label = data["img_test_bin"]
     
     print(tmp_train.shape)
     print(tmp_train_label.shape)
@@ -65,13 +65,8 @@ try:
     orlab = ortrain_label.astype(np.float32)
     #orlab = ortrain_label.astype(np.int32)
     
-    """
-    train = tuple_dataset.TupleDataset(ortrain[0:threshold] / 255, orlab[0:threshold] / 255)
-    test = tuple_dataset.TupleDataset(ortrain[0:threshold:] / 255,  orlab[0:threshold:] / 255)
-    """
-    train = tuple_dataset.TupleDataset(ortrain[0:threshold] * norm_scale, orlab[0:threshold] * norm_scale)
-    test = tuple_dataset.TupleDataset(ortrain[0:threshold:] * norm_scale,  orlab[0:threshold:] * norm_scale)
-    
+    train = tuple_dataset.TupleDataset(ortrain[0:threshold], orlab[0:threshold])
+    test = tuple_dataset.TupleDataset(ortrain[0:threshold:],  orlab[0:threshold:])
 
     #load model
     model = L.Classifier(net.MLP(),lossfun=net.Loss.loss_func)
@@ -91,11 +86,7 @@ try:
     trainer.extend(E.Evaluator(test_iter, model, device=-1))
     trainer.extend(E.LogReport())
     trainer.extend(E.ProgressBar())
-    """
-    trainer.extend(E.PrintReport(
-    ['epoch', 'main/loss', 'validation/main/loss',
-     'main/accuracy', 'validation/main/accuracy']))
-     """
+    
     trainer.extend(E.PrintReport(['epoch', 'main/loss', 'validation/main/loss']))
     trainer.run()
     

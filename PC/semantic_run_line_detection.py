@@ -16,7 +16,6 @@ from chainer import serializers
 import net
 
 
-norm_scale = 1
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
@@ -52,6 +51,33 @@ def load_train_data(npz):
 
     return tmp_train, tmp_train_label
 
+def label2img(label):
+    """
+    * 1 | road        | blue 
+    * 2 | out of road | green
+    * 3 | line        | red
+    * 
+    *
+    """
+    buff = F.argmax(label, axis = 1)
+    buff = F.vstack((buff, buff, buff))
+
+    buff.data[0][buff.data[0] == 0] = 255
+    buff.data[1][buff.data[1] == 0] = 10
+    buff.data[2][buff.data[2] == 0] = 10
+
+    buff.data[0][buff.data[0] == 1] = 10
+    buff.data[1][buff.data[1] == 1] = 255
+    buff.data[2][buff.data[2] == 1] = 10
+
+    buff.data[0][buff.data[0] == 2] = 10
+    buff.data[1][buff.data[1] == 2] = 10
+    buff.data[2][buff.data[2] == 2] = 255
+
+    return buff.data.astype(np.uint8)
+    
+
+
     
 try:
     print("loading")
@@ -78,12 +104,7 @@ try:
             start = time.time()
 
             #detection
-            output = model.predictor(inp * norm_scale)
-
-            #filtering
-            #output.data[(output.data >= threshold_1 * norm_scale) & (output.data <= threshold_2 * norm_scale)] = 127 * norm_scale
-            #output.data[output.data > threshold_2 * norm_scale] = 255 * norm_scale
-            #output.data[output.data < threshold_1] = 0
+            output = model.predictor(inp)
 
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
@@ -95,12 +116,13 @@ try:
             ans = ans.reshape(3,ortrain.shape[2],ortrain.shape[3])
             ans = ans.transpose(1,2,0)
             
-            output = output.data.reshape(3,ortrain.shape[2],ortrain.shape[3]) * norm_scale
+            output = label2img(output)
             output_buff = output
             output = output.transpose(1,2,0)
            
             #calc moments
             moment_img = output_buff[0]
+            moment_img[moment_img <= 10] = 0
             Moments = cv2.moments(moment_img)
             cx,cy = int(Moments["m10"] / Moments["m00"]),int(Moments["m01"] / Moments["m00"])
             cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
@@ -112,7 +134,6 @@ try:
             print(str_angle / np.pi * 180)
 
             show_img = np.vstack((inp, output, moment_img, ans))
-
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
             key = cv2.waitKey(1)

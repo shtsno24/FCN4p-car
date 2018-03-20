@@ -15,7 +15,7 @@ from chainer import serializers
 
 import net
 
-norm_scale = 1
+
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
@@ -49,6 +49,33 @@ def load_train_data(npz):
     print(tmp_train_label.shape)
 
     return tmp_train, tmp_train_label
+
+def label2img(label):
+    """
+    * 1 | road        | blue 
+    * 2 | out of road | green
+    * 3 | line        | red
+    * 
+    *
+    """
+    buff = F.argmax(label, axis = 1)
+    buff = F.vstack((buff, buff, buff))
+
+    buff.data[0][buff.data[0] == 0] = 255
+    buff.data[1][buff.data[1] == 0] = 10
+    buff.data[2][buff.data[2] == 0] = 10
+
+    buff.data[0][buff.data[0] == 1] = 10
+    buff.data[1][buff.data[1] == 1] = 255
+    buff.data[2][buff.data[2] == 1] = 10
+
+    buff.data[0][buff.data[0] == 2] = 10
+    buff.data[1][buff.data[1] == 2] = 10
+    buff.data[2][buff.data[2] == 2] = 255
+
+    return buff.data.astype(np.uint8)
+    
+    
     
 try:
     #find dataset (NPZ file)
@@ -73,7 +100,7 @@ try:
             ans = orlab[i:i + 1,:,:,:]
             start = time.time()
 
-            output = model.predictor(inp * norm_scale)
+            output = model.predictor(inp)
 
             avr_time += (time.time() - start)
             print(j * ortrain.shape[0] + i ,avr_time / (j * ortrain.shape[0] + i + 1))         
@@ -85,9 +112,9 @@ try:
             ans = ans.reshape(3,ortrain.shape[2],ortrain.shape[3])
             ans = ans.transpose(1,2,0)
             
-            output = output.data.reshape(3,ortrain.shape[2],ortrain.shape[3]) * norm_scale
+            output = label2img(output)
             output = output.transpose(1,2,0)
-            
+
             show_img = np.vstack((inp, output, ans))
         
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))

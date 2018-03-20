@@ -15,7 +15,7 @@ from chainer import serializers
 import net
 
 epoch_num = 20000
-norm_scale = 1
+
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 
@@ -75,16 +75,12 @@ try:
     threshold = np.int32(ortrain.shape[0] * 0.50)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
-    """
-    train = tuple_dataset.TupleDataset(ortrain[0:threshold] / 255, orlab[0:threshold] / 255)
-    test = tuple_dataset.TupleDataset(ortrain[0:threshold:] / 255,  orlab[0:threshold:] / 255)
-    """
-    train = tuple_dataset.TupleDataset(ortrain[0:threshold] * norm_scale, orlab[0:threshold] * norm_scale)
-    test = tuple_dataset.TupleDataset(ortrain[0:threshold:] * norm_scale,  orlab[0:threshold:] * norm_scale)
-    
+
+    train = tuple_dataset.TupleDataset(ortrain[0:threshold], orlab[0:threshold])
+    test = tuple_dataset.TupleDataset(ortrain[0:threshold:],  orlab[0:threshold:])
 
     #load model
-    model = L.Classifier(net.MLP(),lossfun=F.mean_squared_error)
+    model = L.Classifier(net.MLP(),lossfun=net.Loss.loss_func)
     model.compute_accuracy = False
     
     #apply optimizer
@@ -92,7 +88,7 @@ try:
     optimizer.setup(model)
 
     #set iterator
-    train_iter = chainer.iterators.SerialIterator(train, batch_size=30)
+    train_iter = chainer.iterators.SerialIterator(train, batch_size=50)
     test_iter = chainer.iterators.SerialIterator(test, batch_size=30, repeat=False, shuffle=False)
 
     #send model to gpu
@@ -106,11 +102,7 @@ try:
     trainer.extend(E.Evaluator(test_iter, model, device=gpu_id))
     trainer.extend(E.LogReport())
     trainer.extend(E.ProgressBar())
-    """
-    trainer.extend(E.PrintReport(
-    ['epoch', 'main/loss', 'validation/main/loss',
-     'main/accuracy', 'validation/main/accuracy']))
-     """
+
     trainer.extend(E.PrintReport(['epoch', 'main/loss', 'validation/main/loss']))
     trainer.run()
     
