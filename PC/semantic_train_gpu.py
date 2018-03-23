@@ -13,6 +13,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 import net
+import util
 
 epoch_num = 20000
 
@@ -27,46 +28,15 @@ using GPU : gpu_id = 0
 
 """
 gpu_id = 0
-chainer.using_config('cudnn_deterministic',True)
-#gpu_id = -1
-
-
-def find_train_data(npz):
-    #find NPZ file
-    if os.path.exists(npz) == False:
-        print(npz + ' does not exist!')
-        input(">>")
-        sys.exit()
-
-def create_folders(folder):
-    #create a folder for model
-    if os.path.exists(folder) == False:
-        print("generate a folder")
-        os.mkdir(folder)
-
-
-def load_train_data(npz):
-    print("loading dataset for training")
-    #loading data from NPZ file
-    with np.load(npz) as data:
-        tmp_train = data["img"]
-        tmp_train_label = data["img_test"]
-    
-    print(tmp_train.shape)
-    print(tmp_train_label.shape)
-
-    return tmp_train, tmp_train_label
-
-
 
     
 try:
     #find dataset (NPZ file)
-    find_train_data(NPZ)
+    util.find_train_data(NPZ)
 
     #load dataset (NPZ file)
-    ortrain, ortrain_label = load_train_data(NPZ)
-    #print(ortrain, ortrain_label)
+    ortrain, ortrain_label = util.load_train_data(NPZ,"img","img_test_bin")
+    
 
     print("epoch : " + str(epoch_num))
     input(">>")
@@ -93,6 +63,7 @@ try:
 
     #send model to gpu
     if gpu_id >= 0:
+        chainer.using_config('cudnn_deterministic',True)
         model.to_gpu(gpu_id)
 
 
@@ -112,7 +83,7 @@ except:
 
 finally:
     print('trained model is saved in "model" folder')
-    create_folders(model_folder)
+    util.create_folders(model_folder)
     model.to_cpu()
     serializers.save_npz(model_folder + "/trained_model.npz",model)
     input(">>")

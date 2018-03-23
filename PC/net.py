@@ -23,7 +23,7 @@ class MLP(chainer.Chain):
         h = F.relu(self.conv3(h))
 
         h = F.relu(self.deconv2(h))
-        h = F.softmax(self.deconv1(h))
+        h = self.deconv1(h)
 
         return h
      

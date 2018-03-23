@@ -13,6 +13,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 import net
+import util
 
 epoch_num = 20000
 
@@ -20,7 +21,7 @@ epoch_num = 20000
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 
-
+"""
 def find_train_data(npz):
     #find NPZ file
     if os.path.exists(npz) == False:
@@ -46,15 +47,14 @@ def load_train_data(npz):
     print(tmp_train_label.shape)
 
     return tmp_train, tmp_train_label
-
+"""
 
 try:
     #find dataset (NPZ file)
-    find_train_data(NPZ)
+    util.find_train_data(NPZ)
 
     #load dataset (NPZ file)
-    ortrain, ortrain_label = load_train_data(NPZ)
-    #print(ortrain, ortrain_label)
+    ortrain, ortrain_label = util.load_train_data(NPZ,"img","img_test_bin")
 
     print("epoch : " + str(epoch_num))
     input(">>")
@@ -63,7 +63,7 @@ try:
     threshold = np.int32(ortrain.shape[0] * 0.50)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
-    #orlab = ortrain_label.astype(np.int32)
+    
     
     train = tuple_dataset.TupleDataset(ortrain[0:threshold], orlab[0:threshold])
     test = tuple_dataset.TupleDataset(ortrain[0:threshold:],  orlab[0:threshold:])
@@ -96,6 +96,6 @@ except:
 
 finally:
     print('trained model is saved in "model" folder')
-    create_folders(model_folder)
+    util.create_folders(model_folder)
     serializers.save_npz(model_folder + "/trained_model.npz",model)
     input(">>")

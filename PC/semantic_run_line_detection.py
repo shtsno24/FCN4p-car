@@ -14,7 +14,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 import net
-
+import util
 
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
@@ -25,7 +25,7 @@ window_name = "input/output/teacher"
 cv2.namedWindow(window_name)
 show_scale = 10
 
-
+"""
 def find_train_data(npz):
     #find NPZ file
     if os.path.exists(npz) == False:
@@ -52,13 +52,13 @@ def load_train_data(npz):
     return tmp_train, tmp_train_label
 
 def label2img(label):
-    """
+    
     * 1 | road        | blue 
     * 2 | out of road | green
     * 3 | line        | red
     * 
     *
-    """
+    
     buff = F.argmax(label, axis = 1)
     buff = F.vstack((buff, buff, buff))
 
@@ -75,17 +75,17 @@ def label2img(label):
     buff.data[2][buff.data[2] == 2] = 255
 
     return buff.data.astype(np.uint8)
-    
+"""    
 
 
     
 try:
     print("loading")
     #find dataset (NPZ file)
-    find_train_data(NPZ)
+    util.find_train_data(NPZ)
 
     #load dataset (NPZ file)
-    ortrain, ortrain_label = load_train_data(NPZ)
+    ortrain, ortrain_label = util.load_train_data(NPZ,"img","img_test")
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
 
@@ -116,7 +116,7 @@ try:
             ans = ans.reshape(3,ortrain.shape[2],ortrain.shape[3])
             ans = ans.transpose(1,2,0)
             
-            output = label2img(output)
+            output = util.label2img(output)
             output_buff = output
             output = output.transpose(1,2,0)
            
