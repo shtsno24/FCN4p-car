@@ -7,7 +7,6 @@ import RPi.GPIO as GPIO
 from picamera import PiCamera
 from picamera import array
 import numpy as np
-import fast_capture
 
 import chainer
 import chainer.functions as F
@@ -18,13 +17,15 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 import net
+import util
+import fast_capture
 
 servo_pin = 18
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(servo_pin,GPIO.OUT)
 servo = GPIO.PWM(servo_pin,100)
 
-norm_scale = 1
+
 NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
@@ -33,7 +34,7 @@ i = 0
 camera = fast_capture.fast_capture()
 
 
-
+"""
 def find_train_data(npz):
     #find NPZ file
     if os.path.exists(npz) == False:
@@ -58,11 +59,11 @@ def load_train_data(npz):
     print(tmp_train_label.shape)
 
     return tmp_train, tmp_train_label
-
+"""
     
 try:
     print("loading")
-    find_train_data(NPZ)
+    util.find_train_data(NPZ)
 
     input(">>")
     servo.start(0.0)
@@ -80,8 +81,8 @@ try:
         inp = inp.reshape(1,1,inp.shape[0],inp.shape[1])
 
         #detection
-        output = model.predictor(inp * norm_scale)
-        output = output.data.reshape(3,output.shape[2],output.shape[3]) * norm_scale
+        output = model.predictor(inp)
+        output = output.data.reshape(3,output.shape[2],output.shape[3])
 
         #calc moments
         moment_img = output[0]

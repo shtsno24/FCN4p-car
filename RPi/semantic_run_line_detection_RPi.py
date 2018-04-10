@@ -15,6 +15,7 @@ from chainer.datasets import tuple_dataset
 from chainer import serializers
 
 import net
+import util
 
 servo_pin = 18
 GPIO.setmode(GPIO.BCM)
@@ -29,6 +30,7 @@ NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
 
+"""
 def find_train_data(npz):
     #find NPZ file
     if os.path.exists(npz) == False:
@@ -53,15 +55,15 @@ def load_train_data(npz):
     print(tmp_train_label.shape)
 
     return tmp_train, tmp_train_label
-
+"""
     
 try:
     print("loading")
     #find dataset (NPZ file)
-    find_train_data(NPZ)
+    util.find_train_data(NPZ)
 
     #load dataset (NPZ file)
-    ortrain, ortrain_label = load_train_data(NPZ)
+    ortrain, ortrain_label = util.load_train_data(NPZ)
     ortrain = ortrain.astype(np.float32)
     orlab = ortrain_label.astype(np.float32)
 
