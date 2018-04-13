@@ -20,13 +20,9 @@ NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
 
-
 window_name = "input/output/teacher"
 cv2.namedWindow(window_name)
 show_scale = 10
-
-   
-
 
     
 try:
@@ -87,7 +83,6 @@ try:
 
             cv2.imshow(window_name, cv2.resize(show_img.astype(np.uint8),(show_img.shape[1] * show_scale, show_img.shape[0] * show_scale)))
             key = cv2.waitKey(1000)
-        
     
 except:
     import traceback
