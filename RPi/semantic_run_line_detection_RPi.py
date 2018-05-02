@@ -30,32 +30,6 @@ NPZ = "data/bin2train_data.npz"
 model_folder = "model"
 avr_time = 0
 
-"""
-def find_train_data(npz):
-    #find NPZ file
-    if os.path.exists(npz) == False:
-        print(npz + ' does not exist!')
-        input(">>")
-        sys.exit()
-
-def create_folders(folder):
-    #create a folder for model
-    if os.path.exists(folder) == False:
-        print("generate a folder")
-        os.mkdir(folder)
-
-def load_train_data(npz):
-    print("loading dataset for training")
-    #loading data from NPZ file
-    with np.load(npz) as data:
-        tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
-    
-    print(tmp_train.shape)
-    print(tmp_train_label.shape)
-
-    return tmp_train, tmp_train_label
-"""
     
 try:
     print("loading")
@@ -91,7 +65,6 @@ try:
             cx, cy = int(1.5 * (cx - moment_img.shape[1] / 2)), int(cy / 3)
 
             str_angle = np.arctan(float(cx) / float(-cy + moment_img.shape[0]))
-            #str_angle = str_angle / np.pi * 180
             servo_duty = (np.pi / 2 + str_angle) * 9.5 + 2.5
             servo.ChangeDutyCycle(servo_duty)
             

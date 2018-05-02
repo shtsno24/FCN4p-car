@@ -33,33 +33,6 @@ i = 0
 
 camera = fast_capture.fast_capture()
 
-
-"""
-def find_train_data(npz):
-    #find NPZ file
-    if os.path.exists(npz) == False:
-        print(npz + ' does not exist!')
-        input(">>")
-        sys.exit()
-
-def create_folders(folder):
-    #create a folder for model
-    if os.path.exists(folder) == False:
-        print("generate a folder")
-        os.mkdir(folder)
-
-def load_train_data(npz):
-    print("loading dataset for training")
-    #loading data from NPZ file
-    with np.load(npz) as data:
-        tmp_train = data["img"]
-        tmp_train_label = data["img_bin"]
-    
-    print(tmp_train.shape)
-    print(tmp_train_label.shape)
-
-    return tmp_train, tmp_train_label
-"""
     
 try:
     print("loading")
@@ -76,7 +49,6 @@ try:
     while True:
         start = time.time()    
         inp = camera.read()
-        #inp = inp.array[0:60, :, 0:1].reshape(160,60).astype(np.float32)
         inp = cv2.flip(inp[0:24,:,0:1].reshape(inp.shape[1],inp.shape[0]).astype(np.float32),0)
         inp = inp.reshape(1,1,inp.shape[0],inp.shape[1])
 

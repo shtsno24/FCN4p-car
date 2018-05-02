@@ -62,6 +62,8 @@ for i in range(img.shape[0]):
     rot_buff_bin = cv2.resize(rot_buff_bin,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
     rot_buff_test = cv2.resize(rot_buff_test,(int(img.shape[3] * img_scale),int(img.shape[2] * img_scale)))
 
+
+
     buff_test = buff_test.transpose(2,0,1)
     rot_buff_test = rot_buff_test.transpose(2,0,1)
 
@@ -93,7 +95,7 @@ print(rot_img_test.shape)
 
 
 
-np.savez("bin2train_data.npz", img=rot_img, img_bin = rot_img_bin, img_test = rot_img_test, img_test_bin = (rot_img_test/127),label=label)
+np.savez("bin2train_data.npz", img=rot_img, img_bin = rot_img_bin, img_test = rot_img_test, img_test_bin = (rot_img_test/127) ,label=label)
 
 
 while True:

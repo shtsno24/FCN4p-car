@@ -44,15 +44,15 @@ def label2img(label):
     buff = F.vstack((buff, buff, buff))
 
     buff.data[0][buff.data[0] == 0] = 255
-    buff.data[1][buff.data[1] == 0] = 10
-    buff.data[2][buff.data[2] == 0] = 10
+    buff.data[1][buff.data[1] == 0] = 0
+    buff.data[2][buff.data[2] == 0] = 0
 
-    buff.data[0][buff.data[0] == 1] = 10
+    buff.data[0][buff.data[0] == 1] = 0
     buff.data[1][buff.data[1] == 1] = 255
-    buff.data[2][buff.data[2] == 1] = 10
+    buff.data[2][buff.data[2] == 1] = 0
 
-    buff.data[0][buff.data[0] == 2] = 10
-    buff.data[1][buff.data[1] == 2] = 10
+    buff.data[0][buff.data[0] == 2] = 0
+    buff.data[1][buff.data[1] == 2] = 0
     buff.data[2][buff.data[2] == 2] = 255
 
     return buff.data.astype(np.uint8)
