@@ -62,10 +62,10 @@ def label2img(label):
     * 1 | road        | blue 
     * 2 | out of road | green
     * 3 | line        | red
-    * 4 | backgrownd  | yellow
-    * 5 |             | white
+    * 4 | backgrownd  | black
+    * 5 |             | yellow
     """
-    color=[[255,0,0],[0,255,0],[0,0,255],[0,255,255],[255,255,255]]
+    color=[[255,0,0],[0,255,0],[0,0,255],[0,0,0],[0,255,255]]
     buff = F.argmax(label, axis = 1)
     out = np.zeros((3,buff.shape[1],buff.shape[2]))
     
@@ -78,3 +78,14 @@ def label2img(label):
                     out[2][i][j] = color[k][2]
 
     return out.astype(np.uint8)
+
+def img2label(img):
+    color=[[255,0,0],[0,255,0],[0,0,255],[0,255,255],[0,127,127]]
+    out = np.zeros((1,5,img.shape[0],img.shape[1]))
+
+    for k in range(5):
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+                if(img[i][j][0] == color{k}[0] and img[i][j][1] == color{k}[1] and img[i][j][2] == color{k}[2]):
+                    out[0][k][i][j] = 1
+    return out

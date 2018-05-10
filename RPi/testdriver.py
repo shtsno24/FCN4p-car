@@ -5,20 +5,25 @@ import picamera
 import numpy as np
 import serial
 
-camera = picamera.Picamera()
+camera = picamera.PiCamera()
 camera.resolution = (64,32)
-COM = sys.argv
+Video = "video.h264"
+COM = "/dev/ttyACM0"
 
+if os.path.exists(Video)==True:
+    os.remove(Video)
+
+"""
 if len(COM) <1:
     print("Nooooo COM port is selected!\nPlease select COM port")
     sys.exit()
 elif len(COM)>1:
     print("Tooooo many COM ports are selected!\nPlease choose one COM port")
     sys.exit()
-
+"""
 try:
-    camera.start_recording("video.h264")
-    with serial.Serial(COM[0], 9600) as ser:
+    camera.start_recording(Video)
+    with serial.Serial(COM, 9600) as ser:
         while True:
             angle = input(">")
             if angle == "r":
@@ -38,4 +43,4 @@ finally:
     camera.stop_recording()
     ser.close()
     camera.close()
-    imput("recoding stopeed >>")
+    input("recoding stopeed >>")
