@@ -86,6 +86,9 @@ def img2label(img):
     for k in range(5):
         for i in range(img.shape[0]):
             for j in range(img.shape[1]):
-                if(img[i][j][0] == color{k}[0] and img[i][j][1] == color{k}[1] and img[i][j][2] == color{k}[2]):
+                if(img[i][j][0] == color[k][0] and img[i][j][1] == color[k][1] and img[i][j][2] == color[k][2]):
                     out[0][k][i][j] = 1
+    print("==================")
+    print(out.shape)
+    print("==================")
     return out
