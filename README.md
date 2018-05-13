@@ -11,7 +11,7 @@
 **Demo**
 	
 
-![result](https://github.com/shtsno24/FCN4p-car/blob/alpha_ver/media/semantic_run_line_detection.gif)
+![result](https://github.com/shtsno24/FCN4p-car/blob/master/media/semantic_run_line_detection.gif)
 
 
 
